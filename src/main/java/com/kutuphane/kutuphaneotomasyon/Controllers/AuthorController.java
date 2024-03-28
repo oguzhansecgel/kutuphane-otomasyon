@@ -1,8 +1,12 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.CreateAuthorDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.UpdateAuthorDto;
 import com.kutuphane.kutuphaneotomasyon.Entities.Author;
 import com.kutuphane.kutuphaneotomasyon.Repository.AuthorRepository;
+import com.kutuphane.kutuphaneotomasyon.Services.abstracts.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,42 +17,32 @@ import java.util.Optional;
 @RequestMapping("/api/author")
 @RequiredArgsConstructor
 public class AuthorController {
-    private final AuthorRepository authorRepository;
+    private final AuthorService authorService;
 
     @GetMapping
     public List<Author> getAll()
     {
-        return authorRepository.findAll();
+        return authorService.getAll();
     }
     @GetMapping("getById")
-    public ResponseEntity<Author> getById(int id)
+    public Author getById(int id)
     {
-        Optional<Author> authorOptional = authorRepository.findById(id);
-        return authorOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return authorService.getById(id);
     }
     @PostMapping("create")
-    public ResponseEntity<Author> createAuthor(@RequestBody Author author)
+    public void createAuthor(@RequestBody CreateAuthorDto dto)
     {
-        return ResponseEntity.ok(authorRepository.save(author));
+        this.authorService.add(dto);
     }
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteAuthor(@RequestParam int id)
+    public void deleteAuthor(@PathVariable int id)
     {
-        authorRepository.deleteById(id);
-
-        return ResponseEntity.ok("Silme Başarılı"+id);
+       this.authorService.delete(id);
     }
     @PutMapping("update")
-    public ResponseEntity<Author> updateAuthor(Author author)
+    public void updateAuthor(@RequestBody UpdateAuthorDto dto)
     {
-        Optional<Author> hasAuthor = authorRepository.findById(author.getId());
-        if(hasAuthor.isPresent())
-        {
-            authorRepository.saveAndFlush(author);
-            return new ResponseEntity<Author>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+         this.authorService.update(dto);
 
     }
 }

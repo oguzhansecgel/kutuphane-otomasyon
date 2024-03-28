@@ -1,8 +1,11 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
+import com.kutuphane.kutuphaneotomasyon.Dtos.Genres.CreateGenresDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Genres.UpdateGenresDto;
 import com.kutuphane.kutuphaneotomasyon.Entities.Book;
 import com.kutuphane.kutuphaneotomasyon.Entities.Genres;
 import com.kutuphane.kutuphaneotomasyon.Repository.GenresRepository;
+import com.kutuphane.kutuphaneotomasyon.Services.abstracts.GenresService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,41 +19,32 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class GenresController {
 
-    private final GenresRepository genresRepository;
+    private final GenresService genresService;
     @GetMapping
     public List<Genres> getAll()
     {
-        return genresRepository.findAll();
+        return genresService.getAll();
     }
     @GetMapping("getById")
-    public ResponseEntity<Genres> getById(int id)
+    public Genres getById(int id)
     {
-        Optional<Genres> genresOptional = genresRepository.findById(id);
-        return genresOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return genresService.getById(id);
     }
     @PostMapping("create")
-    public ResponseEntity<Genres> createGenres(@RequestBody Genres genres)
+    public void createGenres(@RequestBody CreateGenresDto dto)
     {
-        return ResponseEntity.ok(genresRepository.save(genres));
+        genresService.add(dto);
     }
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteGenres(@RequestParam int id)
+    public void deleteGenres(@RequestParam int id)
     {
-        genresRepository.deleteById(id);
+        genresService.delete(id);
 
-        return ResponseEntity.ok("Silme Başarılı"+id);
     }
     @PutMapping("update")
-    public ResponseEntity<Genres> updateGenres(Genres genres)
+    public void updateGenres(UpdateGenresDto dto)
     {
-        Optional<Genres> hasGenres = genresRepository.findById(genres.getId());
-        if(hasGenres.isPresent())
-        {
-            genresRepository.saveAndFlush(genres);
-            return new ResponseEntity<Genres>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        genresService.update(dto);
 
     }
 }

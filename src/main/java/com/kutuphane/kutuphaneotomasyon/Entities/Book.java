@@ -26,7 +26,7 @@ public class Book {
     @OneToOne(mappedBy = "book")
     private ISBN isbn;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book",cascade = CascadeType.ALL)
     private List<Borrow> borrows;
 
     @ManyToOne

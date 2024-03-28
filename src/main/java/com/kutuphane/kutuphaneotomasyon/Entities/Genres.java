@@ -19,7 +19,10 @@ public class Genres {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "name")
+    private String name;
+
     @JsonIgnore
-    @OneToMany(mappedBy = "genres")
+    @OneToMany(mappedBy = "genres",cascade = CascadeType.ALL)
     private List<Book> books;
 }

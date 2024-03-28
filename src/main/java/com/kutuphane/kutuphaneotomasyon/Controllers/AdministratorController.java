@@ -1,8 +1,12 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
+import com.kutuphane.kutuphaneotomasyon.Core.utilities.mappers.ModelMapperService;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.CreateAdministratorDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.UpdateAdministratorDto;
 import com.kutuphane.kutuphaneotomasyon.Entities.Administrator;
 import com.kutuphane.kutuphaneotomasyon.Entities.User;
 import com.kutuphane.kutuphaneotomasyon.Repository.AdministratorRepository;
+import com.kutuphane.kutuphaneotomasyon.Services.abstracts.AdministratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,41 +19,31 @@ import java.util.Optional;
 @RequestMapping("/api/administrator")
 @RequiredArgsConstructor
 public class AdministratorController {
-    private final AdministratorRepository administratorRepository;
+    private final AdministratorService administratorService;
     @GetMapping
     public List<Administrator> getAll()
     {
-        return administratorRepository.findAll();
+        return administratorService.getAll();
     }
-    @GetMapping("getById")
-    public ResponseEntity<Administrator> getById(int id)
+   @GetMapping("getById")
+    public Administrator getById(int id)
     {
-        Optional<Administrator> administratorOptional = administratorRepository.findById(id);
-        return administratorOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return administratorService.getById(id);
     }
     @PostMapping("create")
-    public ResponseEntity<Administrator> createAdministrator(@RequestBody Administrator administrator)
+    public void add(@RequestBody CreateAdministratorDto dto)
     {
-        return ResponseEntity.ok(administratorRepository.save(administrator));
+        administratorService.add(dto);
     }
-    @DeleteMapping("delete")
-    public ResponseEntity<String> deleteAdministrator(@RequestParam int id)
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable int id)
     {
-        administratorRepository.deleteById(id);
+        administratorService.delete(id);
 
-        return ResponseEntity.ok("Silme Başarılı"+id);
     }
     @PutMapping("update")
-    public ResponseEntity<Administrator> updateAdministrator(Administrator administrator)
+    public void update(@RequestBody UpdateAdministratorDto dto)
     {
-        Optional<Administrator> hasAdministrator = administratorRepository.findById(administrator.getId());
-        if(hasAdministrator.isPresent())
-        {
-            administratorRepository.saveAndFlush(administrator);
-            return new ResponseEntity<Administrator>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+        administratorService.update(dto);
     }
 }

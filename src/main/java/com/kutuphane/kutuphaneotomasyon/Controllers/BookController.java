@@ -1,8 +1,12 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.CreateBookDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.UpdateBookDto;
 import com.kutuphane.kutuphaneotomasyon.Entities.Book;
 import com.kutuphane.kutuphaneotomasyon.Repository.BookRepository;
+import com.kutuphane.kutuphaneotomasyon.Services.abstracts.BookService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,42 +19,35 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookController {
 
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
     @GetMapping
     public List<Book> getAll()
     {
-        return bookRepository.findAll();
+        return bookService.getAll();
     }
     @GetMapping("getById")
-    public ResponseEntity<Book> getById(int id)
+    public void getById(int id)
     {
-        Optional<Book> bookOptional = bookRepository.findById(id);
-        return bookOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        bookService.getById(id);
     }
     @PostMapping("create")
-    public ResponseEntity<Book> createBook(@RequestBody Book book)
+    public void createBook(@RequestBody CreateBookDto dto)
     {
-        return ResponseEntity.ok(bookRepository.save(book));
+        bookService.add(dto);
     }
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteBook(@RequestParam int id)
+    public void deleteBook(@RequestParam int id)
     {
-        bookRepository.deleteById(id);
-
-        return ResponseEntity.ok("Silme Başarılı"+id);
+        bookService.delete(id);
     }
     @PutMapping("update")
-    public ResponseEntity<Book> updateBook(Book book)
+    public void updateBook(@RequestBody UpdateBookDto dto)
     {
-        Optional<Book> hasBook = bookRepository.findById(book.getId());
-        if(hasBook.isPresent())
-        {
-            bookRepository.saveAndFlush(book);
-            return new ResponseEntity<Book>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        bookService.update(dto);
 
     }
+
+
+
 }

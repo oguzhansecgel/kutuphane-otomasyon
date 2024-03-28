@@ -30,6 +30,9 @@ public class User {
     @Column(name = "phonenumber")
     private String phoneNumber;
 
-   @OneToMany(mappedBy = "user")
+    @Column(name = "mail")
+    private String mail;
+
+   @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Borrow> borrows;
 }

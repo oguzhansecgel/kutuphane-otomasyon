@@ -1,8 +1,10 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
+import com.kutuphane.kutuphaneotomasyon.Dtos.Borrow.CreateBorrowDto;
 import com.kutuphane.kutuphaneotomasyon.Entities.Book;
 import com.kutuphane.kutuphaneotomasyon.Entities.Borrow;
 import com.kutuphane.kutuphaneotomasyon.Repository.BorrowRepository;
+import com.kutuphane.kutuphaneotomasyon.Services.abstracts.BorrowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,41 +17,31 @@ import java.util.Optional;
 @RequestMapping("/api/borrow")
 @RequiredArgsConstructor
 public class BorrowController {
-    private final BorrowRepository borrowRepository;
-    @GetMapping
+    private final BorrowService borrowService;
+  @GetMapping
     public List<Borrow> getAll()
     {
-        return borrowRepository.findAll();
+        return borrowService.getAll();
     }
     @GetMapping("getById")
-    public ResponseEntity<Borrow> getById(int id)
+    public void getById(int id)
     {
-        Optional<Borrow> borrowOptional = borrowRepository.findById(id);
-        return borrowOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        borrowService.getById(id);
     }
     @PostMapping("create")
-    public ResponseEntity<Borrow> createBorrow(@RequestBody Borrow borrow)
+    public void createBorrow(@RequestBody CreateBorrowDto dto)
     {
-        return ResponseEntity.ok(borrowRepository.save(borrow));
+        borrowService.add(dto);
     }
-    @DeleteMapping("delete")
-    public ResponseEntity<String> deleteBorrow(@RequestParam int id)
+ @DeleteMapping("delete")
+    public void deleteBorrow(@RequestParam int id)
     {
-        borrowRepository.deleteById(id);
-
-        return ResponseEntity.ok("Silme Başarılı"+id);
+        borrowService.delete(id);
     }
-    @PutMapping("update")
-    public ResponseEntity<Borrow> updateBook(Borrow borrow)
+   @PutMapping("update")
+    public void updateBook(Borrow borrow)
     {
-        Optional<Borrow> hasBorrow = borrowRepository.findById(borrow.getId());
-        if(hasBorrow.isPresent())
-        {
-            borrowRepository.saveAndFlush(borrow);
-            return new ResponseEntity<Borrow>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+       borrowService.update(borrow);
 
     }
 }

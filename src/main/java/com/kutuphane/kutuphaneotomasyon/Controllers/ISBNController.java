@@ -1,8 +1,10 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
+import com.kutuphane.kutuphaneotomasyon.Dtos.ISBN.CreateISBNDto;
 import com.kutuphane.kutuphaneotomasyon.Entities.Genres;
 import com.kutuphane.kutuphaneotomasyon.Entities.ISBN;
 import com.kutuphane.kutuphaneotomasyon.Repository.ISBNRepository;
+import com.kutuphane.kutuphaneotomasyon.Services.abstracts.ISBNService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,41 +17,33 @@ import java.util.Optional;
 @RequestMapping("/api/ISBN")
 @RequiredArgsConstructor
 public class ISBNController {
-    private final ISBNRepository isbnRepository;
+    private final ISBNService isbnService;
     @GetMapping
     public List<ISBN> getAll()
     {
-        return isbnRepository.findAll();
+        return isbnService.getAll();
     }
     @GetMapping("getById")
-    public ResponseEntity<ISBN> getById(int id)
+    public void getById(int id)
     {
-        Optional<ISBN> genresOptional = isbnRepository.findById(id);
-        return genresOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+         isbnService.getById(id);
     }
     @PostMapping("create")
-    public ResponseEntity<ISBN> createISBN(@RequestBody ISBN isbn)
+    public void createISBN(@RequestBody CreateISBNDto dto)
     {
-        return ResponseEntity.ok(isbnRepository.save(isbn));
+        isbnService.add(dto);
     }
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteISBN(@RequestParam int id)
+    public void deleteISBN(@RequestParam int id)
     {
-        isbnRepository.deleteById(id);
+        isbnService.delete(id);
 
-        return ResponseEntity.ok("Silme Başarılı"+id);
+
     }
     @PutMapping("update")
-    public ResponseEntity<ISBN> updateGenres(ISBN isbn)
+    public void updateGenres(ISBN isbn)
     {
-        Optional<ISBN> hasISBN = isbnRepository.findById(isbn.getId());
-        if(hasISBN.isPresent())
-        {
-            isbnRepository.saveAndFlush(isbn);
-            return new ResponseEntity<ISBN>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        isbnService.update(isbn);
 
     }
 }

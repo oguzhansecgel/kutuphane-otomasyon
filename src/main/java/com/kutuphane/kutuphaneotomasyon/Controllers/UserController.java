@@ -1,8 +1,11 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.CreateUserDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.UpdateUserDto;
 import com.kutuphane.kutuphaneotomasyon.Entities.Author;
 import com.kutuphane.kutuphaneotomasyon.Entities.User;
 import com.kutuphane.kutuphaneotomasyon.Repository.UserRepository;
+import com.kutuphane.kutuphaneotomasyon.Services.abstracts.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,42 +18,32 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @GetMapping
     public List<User> getAll()
     {
-        return userRepository.findAll();
+        return userService.getAll();
     }
     @GetMapping("getById")
-    public ResponseEntity<User> getById(int id)
+    public User getById(int id)
     {
-        Optional<User> userOptional = userRepository.findById(id);
-        return userOptional.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return userService.getById(id);
     }
     @PostMapping("create")
-    public ResponseEntity<User> createUser(@RequestBody User user)
+    public void createUser(@RequestBody CreateUserDto dto)
     {
-        return ResponseEntity.ok(userRepository.save(user));
+        userService.add(dto);
     }
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteUser(@RequestParam int id)
+    public void deleteUser(@RequestParam int id)
     {
-        userRepository.deleteById(id);
-
-        return ResponseEntity.ok("Silme Başarılı"+id);
+        userService.delete(id);
     }
     @PutMapping("update")
-    public ResponseEntity<User> updateUser(User user)
+    public void updateUser(UpdateUserDto dto)
     {
-        Optional<User> hasUser = userRepository.findById(user.getId());
-        if(hasUser.isPresent())
-        {
-            userRepository.saveAndFlush(user);
-            return new ResponseEntity<User>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.update(dto);
 
     }
 }

@@ -26,8 +26,7 @@ public class ISBN {
     @Column(name = "publisher")
     private String publisher;
 
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "book_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "book_id",referencedColumnName = "id")
     private Book book;
 }
