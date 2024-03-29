@@ -24,9 +24,9 @@ public class ISBNController {
         return isbnService.getAll();
     }
     @GetMapping("getById")
-    public void getById(int id)
+    public ISBN getById(int id)
     {
-         isbnService.getById(id);
+         return isbnService.getById(id);
     }
     @PostMapping("create")
     public void createISBN(@RequestBody CreateISBNDto dto)

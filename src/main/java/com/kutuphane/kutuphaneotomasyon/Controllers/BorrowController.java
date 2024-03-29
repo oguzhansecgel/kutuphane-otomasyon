@@ -24,9 +24,9 @@ public class BorrowController {
         return borrowService.getAll();
     }
     @GetMapping("getById")
-    public void getById(int id)
+    public Borrow getById(int id)
     {
-        borrowService.getById(id);
+        return borrowService.getById(id);
     }
     @PostMapping("create")
     public void createBorrow(@RequestBody CreateBorrowDto dto)

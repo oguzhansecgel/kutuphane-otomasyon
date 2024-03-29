@@ -27,9 +27,9 @@ public class BookController {
         return bookService.getAll();
     }
     @GetMapping("getById")
-    public void getById(int id)
+    public Book getById(int id)
     {
-        bookService.getById(id);
+        return bookService.getById(id);
     }
     @PostMapping("create")
     public void createBook(@RequestBody CreateBookDto dto)
