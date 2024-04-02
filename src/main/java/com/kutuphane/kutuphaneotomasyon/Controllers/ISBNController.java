@@ -1,17 +1,17 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.ISBN.CreateISBNDto;
-import com.kutuphane.kutuphaneotomasyon.Entities.Genres;
+import com.kutuphane.kutuphaneotomasyon.Dtos.ISBN.Request.CreateISBNRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.ISBN.Response.CreateISBNResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.ISBN;
-import com.kutuphane.kutuphaneotomasyon.Repository.ISBNRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.ISBNService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/ISBN")
@@ -29,9 +29,11 @@ public class ISBNController {
          return isbnService.getById(id);
     }
     @PostMapping("create")
-    public void createISBN(@RequestBody CreateISBNDto dto)
+    public ResponseEntity<CreateISBNResponse> createISBN(@RequestBody @Valid CreateISBNRequest dto)
     {
-        isbnService.add(dto);
+        CreateISBNResponse response = isbnService.add(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
+        return ResponseEntity.created(location).body(response);
     }
     @DeleteMapping("delete")
     public void deleteISBN(@RequestParam int id)

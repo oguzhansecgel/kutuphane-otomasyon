@@ -1,14 +1,14 @@
 package com.kutuphane.kutuphaneotomasyon.Services.abstracts;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.CreateAdministratorDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.UpdateAdministratorDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.Request.CreateAdministratorRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.Response.CreateAdministratorResponse;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.Request.UpdateAdministratorRequest;
 import com.kutuphane.kutuphaneotomasyon.Entities.Administrator;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 public interface AdministratorService {
-    void add(CreateAdministratorDto dto);
-    void update(UpdateAdministratorDto dto);
+    CreateAdministratorResponse add(CreateAdministratorRequest dto);
+    void update(UpdateAdministratorRequest dto);
     void delete(int id);
     List<Administrator> getAll();
 

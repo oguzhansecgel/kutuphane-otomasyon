@@ -1,16 +1,15 @@
 package com.kutuphane.kutuphaneotomasyon.Services.abstracts;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.Borrow.CreateBorrowDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.User.CreateUserDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.User.UpdateUserDto;
-import com.kutuphane.kutuphaneotomasyon.Entities.Borrow;
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.Request.CreateUserRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.Request.UpdateUserRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.Response.CreateUserResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.User;
 
 import java.util.List;
 
 public interface UserService {
-    void add(CreateUserDto dto);
-    void update(UpdateUserDto dto);
+    CreateUserResponse add(CreateUserRequest dto);
+    void update(UpdateUserRequest dto);
     void delete(int id);
     List<User> getAll();
 

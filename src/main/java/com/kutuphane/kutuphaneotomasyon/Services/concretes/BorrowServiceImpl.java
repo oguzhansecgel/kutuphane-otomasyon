@@ -1,7 +1,9 @@
 package com.kutuphane.kutuphaneotomasyon.Services.concretes;
 
 import com.kutuphane.kutuphaneotomasyon.Core.utilities.mappers.ModelMapperService;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Borrow.CreateBorrowDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Borrow.Request.CreateBorrowRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Borrow.Request.UpdateBorrowRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Borrow.Response.CreateBorrowResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.Borrow;
 import com.kutuphane.kutuphaneotomasyon.Repository.BorrowRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.BorrowService;
@@ -18,14 +20,17 @@ public class BorrowServiceImpl implements BorrowService {
     private final ModelMapperService modelMapperService;
 
     @Override
-    public void add(CreateBorrowDto dto) {
+    public CreateBorrowResponse add(CreateBorrowRequest dto) {
         Borrow borrow = modelMapperService.forRequest().map(dto,Borrow.class);
-        borrowRepository.save(borrow);
+        Borrow savedBorrow = borrowRepository.save(borrow);
+        return new CreateBorrowResponse(savedBorrow.getId(),savedBorrow.getUser().getId(),savedBorrow.getBook().getId());
     }
 
     @Override
-    public void update(Borrow dto) {
-    borrowRepository.saveAndFlush(dto);
+    public void update(UpdateBorrowRequest dto) {
+        Borrow borrow = modelMapperService.forRequest().map(dto,Borrow.class);
+        borrowRepository.saveAndFlush(borrow);
+
     }
 
     @Override

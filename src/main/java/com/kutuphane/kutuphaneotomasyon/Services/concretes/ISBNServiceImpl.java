@@ -1,7 +1,8 @@
 package com.kutuphane.kutuphaneotomasyon.Services.concretes;
 
 import com.kutuphane.kutuphaneotomasyon.Core.utilities.mappers.ModelMapperService;
-import com.kutuphane.kutuphaneotomasyon.Dtos.ISBN.CreateISBNDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.ISBN.Request.CreateISBNRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.ISBN.Response.CreateISBNResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.ISBN;
 import com.kutuphane.kutuphaneotomasyon.Repository.ISBNRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.ISBNService;
@@ -17,9 +18,10 @@ public class ISBNServiceImpl implements ISBNService {
     private final ISBNRepository isbnRepository;
     private final ModelMapperService modelMapperService;
     @Override
-    public void add(CreateISBNDto dto) {
+    public CreateISBNResponse add(CreateISBNRequest dto) {
         ISBN isbn = modelMapperService.forRequest().map(dto,ISBN.class);
-        isbnRepository.save(isbn);
+        ISBN savedISBN =  isbnRepository.save(isbn);
+        return new CreateISBNResponse(savedISBN.getId(),savedISBN.getNumber());
     }
 
     @Override

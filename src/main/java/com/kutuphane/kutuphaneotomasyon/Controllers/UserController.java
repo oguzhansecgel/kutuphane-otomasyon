@@ -1,18 +1,18 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.User.CreateUserDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.User.UpdateUserDto;
-import com.kutuphane.kutuphaneotomasyon.Entities.Author;
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.Request.CreateUserRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.Request.UpdateUserRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.User.Response.CreateUserResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.User;
-import com.kutuphane.kutuphaneotomasyon.Repository.UserRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -30,10 +30,12 @@ public class UserController {
     {
         return userService.getById(id);
     }
-    @PostMapping("create")
-    public void createUser(@RequestBody CreateUserDto dto)
+    @PostMapping
+    public ResponseEntity<CreateUserResponse> createUser(@RequestBody @Valid CreateUserRequest dto)
     {
-        userService.add(dto);
+        CreateUserResponse response =  userService.add(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
+        return ResponseEntity.created(location).body(response);
     }
     @DeleteMapping("delete")
     public void deleteUser(@RequestParam int id)
@@ -41,7 +43,7 @@ public class UserController {
         userService.delete(id);
     }
     @PutMapping("update")
-    public void updateUser(UpdateUserDto dto)
+    public void updateUser(@RequestBody @Valid UpdateUserRequest dto)
     {
         userService.update(dto);
 

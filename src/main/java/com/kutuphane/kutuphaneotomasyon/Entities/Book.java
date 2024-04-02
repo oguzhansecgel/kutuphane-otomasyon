@@ -23,7 +23,7 @@ public class Book {
     @Column(name = "name")
     private String bookName;
 
-    @OneToOne(mappedBy = "book")
+    @OneToOne(mappedBy ="book")
     private ISBN isbn;
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL)
@@ -36,5 +36,10 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "genres_id")
     private Genres genres;
+
+
+    // category - product
+    //
+
 
 }
