@@ -1,18 +1,18 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.Book.CreateBookDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Book.UpdateBookDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.Request.CreateBookRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.Request.UpdateBookRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.Response.CreateBookResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.Book;
-import com.kutuphane.kutuphaneotomasyon.Repository.BookRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.BookService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/book")
@@ -32,9 +32,11 @@ public class BookController {
         return bookService.getById(id);
     }
     @PostMapping("create")
-    public void createBook(@RequestBody CreateBookDto dto)
+    public ResponseEntity<CreateBookResponse> createBook(@RequestBody @Valid CreateBookRequest dto)
     {
-        bookService.add(dto);
+        CreateBookResponse response = bookService.add(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
+        return ResponseEntity.created(location).body(response);
     }
     @DeleteMapping("delete")
     public void deleteBook(@RequestParam int id)
@@ -42,7 +44,7 @@ public class BookController {
         bookService.delete(id);
     }
     @PutMapping("update")
-    public void updateBook(@RequestBody UpdateBookDto dto)
+    public void updateBook(@RequestBody @Valid UpdateBookRequest dto)
     {
         bookService.update(dto);
 

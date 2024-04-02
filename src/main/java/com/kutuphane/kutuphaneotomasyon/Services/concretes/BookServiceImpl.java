@@ -1,8 +1,9 @@
 package com.kutuphane.kutuphaneotomasyon.Services.concretes;
 
 import com.kutuphane.kutuphaneotomasyon.Core.utilities.mappers.ModelMapperService;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Book.CreateBookDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Book.UpdateBookDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.Request.CreateBookRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.Request.UpdateBookRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Book.Response.CreateBookResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.Book;
 import com.kutuphane.kutuphaneotomasyon.Repository.BookRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.BookService;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,13 +18,14 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final ModelMapperService modelMapperService;
     @Override
-    public void add(CreateBookDto dto) {
+    public CreateBookResponse add(CreateBookRequest dto) {
         Book book = this.modelMapperService.forRequest().map(dto,Book.class);
-        bookRepository.save(book);
+        Book savedBook = bookRepository.save(book);
+        return new CreateBookResponse(savedBook.getId(), savedBook.getBookName());
     }
 
     @Override
-    public void update(UpdateBookDto dto) {
+    public void update(UpdateBookRequest dto) {
         Book book = this.modelMapperService.forRequest().map(dto,Book.class);
         bookRepository.saveAndFlush(book);
     }

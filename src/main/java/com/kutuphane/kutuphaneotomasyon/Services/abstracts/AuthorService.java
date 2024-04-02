@@ -1,18 +1,19 @@
 package com.kutuphane.kutuphaneotomasyon.Services.abstracts;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.CreateAdministratorDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Author.CreateAuthorDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Author.UpdateAuthorDto;
-import com.kutuphane.kutuphaneotomasyon.Entities.Administrator;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Request.CreateAuthorRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Response.CreateAuthorResponse;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Request.UpdateAuthorRequest;
 import com.kutuphane.kutuphaneotomasyon.Entities.Author;
 
 import java.util.List;
 
 public interface AuthorService {
-    void add(CreateAuthorDto dto);
-    void update(UpdateAuthorDto dto);
+    CreateAuthorResponse add(CreateAuthorRequest dto);
+    void update(UpdateAuthorRequest dto);
     void delete(int id);
     List<Author> getAll();
 
     Author getById(int id);
+
+
 }

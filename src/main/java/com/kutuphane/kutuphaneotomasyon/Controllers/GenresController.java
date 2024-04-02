@@ -1,18 +1,18 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.Genres.CreateGenresDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Genres.UpdateGenresDto;
-import com.kutuphane.kutuphaneotomasyon.Entities.Book;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Genres.Request.CreateGenresRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Genres.Request.UpdateGenresRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Genres.Response.CreateGenresResponse;
 import com.kutuphane.kutuphaneotomasyon.Entities.Genres;
-import com.kutuphane.kutuphaneotomasyon.Repository.GenresRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.GenresService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/genres")
@@ -31,9 +31,11 @@ public class GenresController {
         return genresService.getById(id);
     }
     @PostMapping("create")
-    public void createGenres(@RequestBody CreateGenresDto dto)
+    public ResponseEntity<CreateGenresResponse> createGenres(@RequestBody @Valid CreateGenresRequest dto)
     {
-        genresService.add(dto);
+        CreateGenresResponse response = genresService.add(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
+        return ResponseEntity.created(location).body(response);
     }
     @DeleteMapping("delete")
     public void deleteGenres(@RequestParam int id)
@@ -42,7 +44,7 @@ public class GenresController {
 
     }
     @PutMapping("update")
-    public void updateGenres(UpdateGenresDto dto)
+    public void updateGenres(@RequestBody @Valid UpdateGenresRequest dto)
     {
         genresService.update(dto);
 

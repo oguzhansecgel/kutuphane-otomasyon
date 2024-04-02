@@ -1,19 +1,18 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
-import com.kutuphane.kutuphaneotomasyon.Core.utilities.mappers.ModelMapperService;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.CreateAdministratorDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.UpdateAdministratorDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.Request.CreateAdministratorRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.Response.CreateAdministratorResponse;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Administrator.Request.UpdateAdministratorRequest;
 import com.kutuphane.kutuphaneotomasyon.Entities.Administrator;
-import com.kutuphane.kutuphaneotomasyon.Entities.User;
-import com.kutuphane.kutuphaneotomasyon.Repository.AdministratorRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.AdministratorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/administrator")
@@ -30,10 +29,12 @@ public class AdministratorController {
     {
         return administratorService.getById(id);
     }
-    @PostMapping("create")
-    public void add(@RequestBody CreateAdministratorDto dto)
+    @PostMapping
+    public ResponseEntity<CreateAdministratorResponse> add(@RequestBody @Valid CreateAdministratorRequest dto)
     {
-        administratorService.add(dto);
+        CreateAdministratorResponse response = administratorService.add(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
+        return ResponseEntity.created(location).body(response);
     }
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id)
@@ -42,7 +43,7 @@ public class AdministratorController {
 
     }
     @PutMapping("update")
-    public void update(@RequestBody UpdateAdministratorDto dto)
+    public void update(@RequestBody @Valid UpdateAdministratorRequest dto)
     {
         administratorService.update(dto);
     }

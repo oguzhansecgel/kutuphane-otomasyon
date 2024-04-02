@@ -1,18 +1,19 @@
 package com.kutuphane.kutuphaneotomasyon.Controllers;
 
-import com.kutuphane.kutuphaneotomasyon.Dtos.Author.CreateAuthorDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Author.UpdateAuthorDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Request.CreateAuthorRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Response.CreateAuthorResponse;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Request.UpdateAuthorRequest;
 import com.kutuphane.kutuphaneotomasyon.Entities.Author;
-import com.kutuphane.kutuphaneotomasyon.Repository.AuthorRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/author")
 @RequiredArgsConstructor
@@ -30,9 +31,11 @@ public class AuthorController {
         return authorService.getById(id);
     }
     @PostMapping("create")
-    public void createAuthor(@RequestBody CreateAuthorDto dto)
+    public ResponseEntity<CreateAuthorResponse> createAuthor(@RequestBody @Valid CreateAuthorRequest dto)
     {
-        this.authorService.add(dto);
+        CreateAuthorResponse response = authorService.add(dto);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId()).toUri();
+        return ResponseEntity.created(location).body(response);
     }
     @DeleteMapping("delete")
     public void deleteAuthor(@PathVariable int id)
@@ -40,7 +43,7 @@ public class AuthorController {
        this.authorService.delete(id);
     }
     @PutMapping("update")
-    public void updateAuthor(@RequestBody UpdateAuthorDto dto)
+    public void updateAuthor(@RequestBody @Valid UpdateAuthorRequest dto)
     {
          this.authorService.update(dto);
 

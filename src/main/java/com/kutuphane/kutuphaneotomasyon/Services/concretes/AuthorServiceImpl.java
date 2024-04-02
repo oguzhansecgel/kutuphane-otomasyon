@@ -1,8 +1,9 @@
 package com.kutuphane.kutuphaneotomasyon.Services.concretes;
 
 import com.kutuphane.kutuphaneotomasyon.Core.utilities.mappers.ModelMapperService;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Author.CreateAuthorDto;
-import com.kutuphane.kutuphaneotomasyon.Dtos.Author.UpdateAuthorDto;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Request.CreateAuthorRequest;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Response.CreateAuthorResponse;
+import com.kutuphane.kutuphaneotomasyon.Dtos.Author.Request.UpdateAuthorRequest;
 import com.kutuphane.kutuphaneotomasyon.Entities.Author;
 import com.kutuphane.kutuphaneotomasyon.Repository.AuthorRepository;
 import com.kutuphane.kutuphaneotomasyon.Services.abstracts.AuthorService;
@@ -18,13 +19,14 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
     private final ModelMapperService modelMapperService;
     @Override
-    public void add(CreateAuthorDto dto) {
+    public CreateAuthorResponse add(CreateAuthorRequest dto) {
         Author author = this.modelMapperService.forRequest().map(dto,Author.class);
-        authorRepository.save(author);
+        Author savedAuthor = authorRepository.save(author);
+        return new CreateAuthorResponse(savedAuthor.getId(), savedAuthor.getFirstName(), savedAuthor.getLastName());
     }
 
     @Override
-    public void update(UpdateAuthorDto dto) {
+    public void update(UpdateAuthorRequest dto) {
         Author author = this.modelMapperService.forRequest().map(dto,Author.class);
         Optional<Author> authorCheck = authorRepository.findById(dto.getId());
         if(authorCheck.isEmpty())
