@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class CreateAdministratorRequest {
     @NotBlank
     @Size(min = 3,max = 50, message = "Minimum 3 maximum 50 karakterlik veri girişi yapınız")
+    @Size(min = 1,max = 50)
     private String userName;
     private int password;
     @NotBlank

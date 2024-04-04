@@ -15,7 +15,7 @@ public class CreateAuthorRequest {
     @Size(min = 2,max = 50)
     private String firstName;
     @NotBlank
-    @Size(min = 2,max = 50)
+    @Size(min = 1,max = 50)
     private  String lastName;
 
 }
